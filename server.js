@@ -19,14 +19,17 @@ io.on('connection', (socket) => {
 		io.emit("testback");
 	});
 
-	socket.on('move',(xValue) =>{
-		pictureValue += xValue;
-		io.emit("moved", pictureValue);
+	socket.on('move', (xValue) => {
+			pictureValue += xValue;
+			io.emit("moved", pictureValue);
 		}
 	)
-
 });
 
 http.listen(3000, () => {
 	console.log("server started!!");
 })
+
+const interval = setInterval(() => {
+	io.emit('frame');
+}, 200);

@@ -18,6 +18,10 @@ export default class SocketHandler {
 		this.socket.on("moved", (xValue)=>{
 			game.updateLogoPos(xValue);
 		});
+
+		this.socket.on('frame', ()=>{
+			console.log("frame received");
+		});
 	}
 
 	basicEmit(){
