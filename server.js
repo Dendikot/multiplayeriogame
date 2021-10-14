@@ -11,8 +11,20 @@ const io = require('socket.io')(http, {
 	}
 });
 
+let pictureValue = 0;
+
 io.on('connection', (socket) => {
-	console.log("user connected " + socket.id);
+
+	socket.on('test', () => {
+		io.emit("testback");
+	});
+
+	socket.on('move',(xValue) =>{
+		pictureValue += xValue;
+		io.emit("moved", pictureValue);
+		}
+	)
+
 });
 
 http.listen(3000, () => {
