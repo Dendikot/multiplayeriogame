@@ -19,8 +19,8 @@ export default class SocketHandler {
 			game.updateLogoPos(xValue);
 		});
 
-		this.socket.on('frame', ()=>{
-			console.log("frame received");
+		this.socket.on('frame', (xValue)=>{
+			game.updateLogoPos(xValue);
 		});
 	}
 

@@ -33,8 +33,7 @@ class MyGame extends Phaser.Scene {
 	}
 
 	updateLogoPos(xValue) {
-		this.logo.x += xValue;
-		console.log(this.logo.x);
+		this.logo.x += xValue * 20;
 	}
 
 	update(time, delta) {
