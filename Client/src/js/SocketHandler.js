@@ -32,7 +32,4 @@ export default class SocketHandler {
 	moveEmit(xVal){
 		this.socket.emit("move", xVal);
 	}
-
-
-
 }
