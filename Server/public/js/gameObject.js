@@ -1,4 +1,8 @@
 //object for each player
-class gameObject{
-
+class GameObject {
+	constructor() {
+		console.log("game");
+	}
 }
+
+module.exports = GameObject;

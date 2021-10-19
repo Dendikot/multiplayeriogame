@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 const gm = require('./public/js/gameObject.js');
-
+const gameObject = new gm();
 
 const io = require('socket.io')(http, {
 	cors: {

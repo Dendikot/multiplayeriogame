@@ -33,3 +33,8 @@ export default class SocketHandler {
 		this.socket.emit("move", xVal);
 	}
 }
+
+
+// create a new project set up from the webpack example
+// repeate all the nessesary parts except the ones that require not nessesary dependecies
+// recreate set up and then proceed with game logic
