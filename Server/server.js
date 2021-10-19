@@ -1,16 +1,18 @@
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import {createServer} from 'http';
+import {Server} from 'socket.io';
+import cors from 'cors';
+import GameObject from './public/js/gameObject.js';
 
-app.use(cors());
+const app = express();
+const http = createServer(app);
+const cor = cors();
+const game = new GameObject();
+
+app.use(cor);
 app.use(express.static('public'));
 
-const gm = require('./public/js/gameObject.js');
-const gameObject = new gm();
-
-const io = require('socket.io')(http, {
+const io = new Server(http, {
 	cors: {
 		origin: 'http://localhost:8080',
 		methods: ["GET", "POST"]
