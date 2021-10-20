@@ -4,11 +4,17 @@ export default class SocketHandler {
 	constructor(game) {
 		this.game = game;
 		this.socket = io('http://localhost:3000');
+
+		this.socket.emit("startGame");
 		this.socket.on('connect', () => {
 			this.game.addPlayer(this.socket.id);
 		});
 
-		this.socket.emit("startGame");
+		this.socket.on('receiveCurrentPlayers', (array) => {
+			for (let player in array){
+				this.game.addPlayer(player.id);
+			}
+		});
 
 		this.socket.on('frame', (dataJson) => {
 			this.manageData(dataJson);

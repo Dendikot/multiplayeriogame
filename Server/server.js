@@ -18,8 +18,12 @@ const io = new Server(http, {
 });
 
 let participatedUsers = {};
+let sockets = [];
 
 io.on('connection', (socket) => {
+	sockets.push(socket);
+	socket.broadcast.emit("newPlayer", socket.id);
+	io.to(socket.id).emit("receiveCurrentPlayers", participatedUsers);
 
 	participatedUsers[socket.id] = new GameObject(0, 0);
 
@@ -32,10 +36,13 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		delete participatedUsers[socket.id];
 		socket.broadcast.emit("playerDisconnected", socket.id);
+		const index = sockets.indexOf(socket);
+		sockets.splice(index, 1);
 	});
 
-	socket.broadcast.emit('newPlayer', socket.id);
+
 });
+
 
 http.listen(3000, () => {
 	console.log("server started!!");

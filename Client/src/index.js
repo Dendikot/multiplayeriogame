@@ -47,8 +47,10 @@ class MyGame extends Phaser.Scene {
 	}
 
 	removePlayer(id){
-		this.PlayersData[id].destroy();
-		delete this.PlayersData[id];
+		if (this.PlayersData[id]) {
+			this.PlayersData[id].destroy();
+			delete this.PlayersData[id];
+		}
 	}
 }
 
