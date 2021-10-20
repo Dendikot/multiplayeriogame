@@ -9,35 +9,46 @@ class MyGame extends Phaser.Scene {
 
 	preload() {
 		this.load.image('logo', logoImg);
-		this.socketHnadler = new SocketHandler(2, this);
+		this.socketHnadler = new SocketHandler(this);
 	}
 
 	create() {
-		this.logo = this.add.image(400, 150, 'logo');
-		console.log(this.logo);
-		this.tweens.add({
-			targets: this.logo,
-			y: 450,
-			duration: 2000,
-			ease: "Power2",
-			yoyo: true,
-			loop: -1
-		});
-
 		this.scene.scene.input.keyboard.on('keydown-' + 'D', () => {
-			this.socketHnadler.moveEmit(1);
+			this.socketHnadler.moveEmit(1, 0);
 		});
 		this.scene.scene.input.keyboard.on('keydown-' + 'A', () => {
-			this.socketHnadler.moveEmit(-1);
+			this.socketHnadler.moveEmit(-1, 0);
 		});
+		this.PlayersData = {};
 	}
 
-	updateLogoPos(xValue) {
-		this.logo.x += xValue * 20;
+	updateLogoPos(users) {
+		console.log(users);
+		console.log(users[0]);
 	}
 
 	update(time, delta) {
 		super.update(time, delta);
+	}
+
+	handleData(playerData, enemiesData){
+
+	}
+
+	addPlayer(id){
+		this.PlayersData[id] = this.createLogo();
+	}
+
+	createLogo(){
+		const logo = this.add.image(400, 150, 'logo');
+		logo.scaleX = 0.5;
+		logo.scaleY = 0.5;
+		return logo;
+	}
+
+	removePlayer(id){
+		this.PlayersData[id].destroy();
+		delete this.PlayersData[id];
 	}
 }
 
@@ -50,3 +61,7 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+// assign the player id so it will be possible to distinct it in the future
+// by pressing buttons send the data and evaluate the correct socket data wich gets send back and updated on the
+// cient side

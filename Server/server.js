@@ -7,10 +7,8 @@ import GameObject from './public/js/gameObject.js';
 const app = express();
 const http = createServer(app);
 const cor = cors();
-const game = new GameObject();
 
 app.use(cor);
-app.use(express.static('public'));
 
 const io = new Server(http, {
 	cors: {
@@ -19,25 +17,24 @@ const io = new Server(http, {
 	}
 });
 
-let pictureValue = 0;
-
-let participatedUsers = [];
+let participatedUsers = {};
 
 io.on('connection', (socket) => {
 
-	//participatedUsers[socket.id] = new gameObjectBase();
+	participatedUsers[socket.id] = new GameObject(0, 0);
 
-	socket.on('test', () => {
-		io.emit("testback");
+	socket.on("Input", (x, y) => {
+		if (participatedUsers[socket.id]) {
+			participatedUsers[socket.id].movePlayer(x, y);
+		}
 	});
 
-	// how do I receive the data accordingly to each separate socket
-	// by using their socket id as index and directly changing the data in
-	socket.on('move', (xValue) => {
-			pictureValue = xValue;
-		}
-	)
+	socket.on('disconnect', () => {
+		delete participatedUsers[socket.id];
+		socket.broadcast.emit("playerDisconnected", socket.id);
+	});
 
+	socket.broadcast.emit('newPlayer', socket.id);
 });
 
 http.listen(3000, () => {
@@ -47,8 +44,9 @@ http.listen(3000, () => {
 // I emit the data about the whole map to all socket players and they recreate it on their side
 //
 const interval = setInterval(() => {
-	io.emit('frame', pictureValue);
+	const object = JSON.stringify(participatedUsers);
+	io.emit('frame', object);
 }, 10);
 
-// set up the webpack based middle ware server
-// make commit
+
+// on player creation receive the data about all current existing players and create needed graphics

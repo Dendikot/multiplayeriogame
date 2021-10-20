@@ -1,36 +1,41 @@
 import io from 'socket.io-client';
 
 export default class SocketHandler {
-	constructor(id, game) {
+	constructor(game) {
+		this.game = game;
 		this.socket = io('http://localhost:3000');
-		console.log(this.socket);
-
 		this.socket.on('connect', () => {
-			console.log("connected i guess");
-		})
-
-		this.socket.on("testback", ()=>{
-			console.log("bck");
+			this.game.addPlayer(this.socket.id);
 		});
 
 		this.socket.emit("startGame");
 
-		this.socket.on("moved", (xValue)=>{
-			game.updateLogoPos(xValue);
+		this.socket.on('frame', (dataJson) => {
+			this.manageData(dataJson);
 		});
 
-		this.socket.on('frame', (xValue)=>{
-			game.updateLogoPos(xValue);
+
+		this.socket.on("newPlayer", (id) => {
+			this.game.addPlayer(id);
+			console.log("new player");
+		});
+
+		this.socket.on("playerDisconnected", (id) => {
+			this.game.removePlayer(id);
 		});
 	}
 
-	basicEmit(){
+	basicEmit() {
 		this.socket.emit("test");
 		console.log("basic emit method called");
 	}
 
-	moveEmit(xVal){
-		this.socket.emit("move", xVal);
+	moveEmit(xVal, yVal) {
+		this.socket.emit("input", xVal, yVal);
+	}
+
+	manageData(dataJson) {
+		const object = JSON.parse(dataJson);
 	}
 }
 
