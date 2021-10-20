@@ -9,16 +9,15 @@ class MyGame extends Phaser.Scene {
 
 	preload() {
 		this.load.image('logo', logoImg);
-		this.socketHnadler = new SocketHandler(this);
+		this.socketHandler = new SocketHandler(this);
 	}
 
 	create() {
-		this.scene.scene.input.keyboard.on('keydown-' + 'D', () => {
-			this.socketHnadler.moveEmit(1, 0);
-		});
-		this.scene.scene.input.keyboard.on('keydown-' + 'A', () => {
-			this.socketHnadler.moveEmit(-1, 0);
-		});
+		this.Left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+		this.Right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+		this.Top = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+		this.Down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
 		this.PlayersData = {};
 	}
 
@@ -29,6 +28,12 @@ class MyGame extends Phaser.Scene {
 
 	update(time, delta) {
 		super.update(time, delta);
+
+		if (Phaser.Input.Keyboard.JustDown(this.Left)){
+			this.socketHandler.moveEmit( "Left");
+			console.log("pressed left on client side");
+		}
+
 	}
 
 	handleData(playerData, enemiesData){
@@ -37,6 +42,14 @@ class MyGame extends Phaser.Scene {
 
 	addPlayer(id){
 		this.PlayersData[id] = this.createLogo();
+		console.log(this.PlayersData);
+	}
+
+	movePlayer(id, x, y){
+		if (this.PlayersData[id] !== undefined) {
+			this.PlayersData[id].x = x;
+			this.PlayersData[id].y = y;
+		}
 	}
 
 	createLogo(){
@@ -67,3 +80,5 @@ const game = new Phaser.Game(config);
 // assign the player id so it will be possible to distinct it in the future
 // by pressing buttons send the data and evaluate the correct socket data wich gets send back and updated on the
 // cient side
+
+//todo move player based on one click and stop moving based on button up

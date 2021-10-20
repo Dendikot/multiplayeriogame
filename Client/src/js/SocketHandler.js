@@ -11,7 +11,7 @@ export default class SocketHandler {
 		});
 
 		this.socket.on('receiveCurrentPlayers', (array) => {
-			for (let player in array){
+			for (let player in array) {
 				this.game.addPlayer(player.id);
 			}
 		});
@@ -23,7 +23,6 @@ export default class SocketHandler {
 
 		this.socket.on("newPlayer", (id) => {
 			this.game.addPlayer(id);
-			console.log("new player");
 		});
 
 		this.socket.on("playerDisconnected", (id) => {
@@ -36,12 +35,15 @@ export default class SocketHandler {
 		console.log("basic emit method called");
 	}
 
-	moveEmit(xVal, yVal) {
-		this.socket.emit("input", xVal, yVal);
+	moveEmit(direction) {
+		this.socket.emit("Input", direction);
 	}
 
 	manageData(dataJson) {
 		const object = JSON.parse(dataJson);
+		for (let entry in object) {
+			this.game.movePlayer(entry, object[entry].x, object[entry].y);
+		}
 	}
 }
 
