@@ -15,8 +15,10 @@ class MyGame extends Phaser.Scene {
 	create() {
 		this.Left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 		this.Right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-		this.Top = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+		this.Up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 		this.Down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+		this.HorizontalMove = false;
+		this.VerticalMove = false;
 
 		this.PlayersData = {};
 	}
@@ -29,11 +31,30 @@ class MyGame extends Phaser.Scene {
 	update(time, delta) {
 		super.update(time, delta);
 
+		this.handleInput();
+
+	}
+
+	handleInput(){
 		if (Phaser.Input.Keyboard.JustDown(this.Left)){
 			this.socketHandler.moveEmit( "Left");
 			console.log("pressed left on client side");
+		} else if(Phaser.Input.Keyboard.JustDown(this.Right)){
+			this.socketHandler.moveEmit( "Right");
+			console.log("pressed right on client side");
+		} else if (this.HorizontalMove) {
+			this.socketHandler.moveEmit( "StopHorizontal");
+			this.HorizontalMove = false;
 		}
 
+		if (Phaser.Input.Keyboard.JustDown(this.Down)){
+			this.socketHandler.moveEmit( "Down");
+			console.log("pressed Down on client side");
+		}
+		if (Phaser.Input.Keyboard.JustDown(this.Up)){
+			this.socketHandler.moveEmit( "Up");
+			console.log("pressed left on client side");
+		}
 	}
 
 	handleData(playerData, enemiesData){
@@ -41,8 +62,9 @@ class MyGame extends Phaser.Scene {
 	}
 
 	addPlayer(id){
-		this.PlayersData[id] = this.createLogo();
-		console.log(this.PlayersData);
+		if (!this.PlayersData[id]) {
+			this.PlayersData[id] = this.createLogo();
+		}
 	}
 
 	movePlayer(id, x, y){

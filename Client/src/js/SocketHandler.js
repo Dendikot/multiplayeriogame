@@ -6,13 +6,10 @@ export default class SocketHandler {
 		this.socket = io('http://localhost:3000');
 
 		this.socket.emit("startGame");
-		this.socket.on('connect', () => {
-			this.game.addPlayer(this.socket.id);
-		});
 
 		this.socket.on('receiveCurrentPlayers', (array) => {
 			for (let player in array) {
-				this.game.addPlayer(player.id);
+				this.game.addPlayer(player);
 			}
 		});
 
@@ -20,14 +17,11 @@ export default class SocketHandler {
 			this.manageData(dataJson);
 		});
 
-
-		this.socket.on("newPlayer", (id) => {
-			this.game.addPlayer(id);
-		});
-
 		this.socket.on("playerDisconnected", (id) => {
 			this.game.removePlayer(id);
 		});
+
+
 	}
 
 	basicEmit() {

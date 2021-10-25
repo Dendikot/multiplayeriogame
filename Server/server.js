@@ -20,16 +20,14 @@ const io = new Server(http, {
 let participatedUsers = {};
 let sockets = [];
 
+
 io.on('connection', (socket) => {
 	sockets.push(socket);
-	socket.broadcast.emit("newPlayer", socket.id);
-	io.to(socket.id).emit("receiveCurrentPlayers", participatedUsers);
-
 	participatedUsers[socket.id] = new GameObject(0, 0);
+	io.emit("receiveCurrentPlayers", participatedUsers);
 
 	socket.on("Input", (direction) => {
 		if (participatedUsers[socket.id]) {
-			console.log("Call received on server side " + direction);
 			participatedUsers[socket.id].movePlayer(direction);
 		}
 	});
@@ -57,27 +55,18 @@ const interval = setInterval(() => {
 let lastUpdateTime = Date.now();
 //request animation frame seems to be not possible here so it should be replaced.
 // update is not working
-function render() {
-	window.requestAnimationFrame(render);
 
+setInterval(render, 1000/60);
+
+function render() {
 	const now = Date.now();
 	const dt = (now - lastUpdateTime) / 1000;
 	lastUpdateTime = now;
-
 	for (let player in participatedUsers) {
-		participatedUsers.update(dt);
+		participatedUsers[player].update(dt);
 	}
 }
+// why only first player received the updates correctly?
+// probably the overall connection logic at the beginning
 
-// send the delta of the changed stuff instead
-// send the world only once several ticks
-
-// client side prediction
-
-// use velocity instead of direct value
-// interpolate as much as possible on a client side
-
-//
-
-
-// on player creation receive the data about all current existing players and create needed graphics
+// think of how to send data correctly

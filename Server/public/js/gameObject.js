@@ -13,14 +13,34 @@ export default class GameObject {
 			case "Left":
 				this.moveX = -1;
 				break;
+			case "Right":
+				this.moveX = 1;
+				break;
+			case "Up":
+				this.moveY = -1;
+				break;
+			case "Down":
+				this.moveY = 1;
+				break;
+			case "StopHorizontal":
+				this.moveX = 0;
+				break;
+			case "StopVertical":
+				this.moveY = 0;
+				break;
 			default:
 				break;
 		}
 	}
 
+	test(){
+		console.log("test");
+	}
+
 	update(delta) {
 		if (this.moveX !== 0) {
 			this.x += this.moveX * delta * 10;
+
 		}
 		if (this.moveY !== 0) {
 			this.y += this.moveY * delta * 10;
